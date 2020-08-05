@@ -1,4 +1,7 @@
 test
 git config log.mailmap true
-git config mailmap.blob uuid-map
+git config mailmap.blob uuid-map:uuid-map
+git config mailmap.blob remotes/origin/uuid-map:uuid-map
 git update-ref uuid-map "$(git hash-object -w NEWMAP)"
+
+git update-ref refs/heads/uuid-map "$(git commit-tree $(printf "100644 blob $(git hash-object -w NEWMAP)\tuuid-map" | git mktree) <<< "")"
