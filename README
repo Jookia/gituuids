@@ -1,7 +1,58 @@
-test
-git config log.mailmap true
-git config mailmap.blob uuid-map:uuid-map
-git config mailmap.blob remotes/origin/uuid-map:uuid-map
-git update-ref uuid-map "$(git hash-object -w NEWMAP)"
+hi there my name's jookia and i spent too much time trying to explain that this is possible, so here it is:
+UUIDs AS GIT NAMES! MODIFIABLE AUTHOR NAMES! IMMUTABLE COMMITS! MAGIC!
 
-git update-ref refs/heads/uuid-map "$(git commit-tree $(printf "100644 blob $(git hash-object -w NEWMAP)\tuuid-map" | git mktree) <<< "")"
+ok show me thegoods
+===================
+
+ok clone this repo and check the log, like this:
+
+```
+git clone https://github.com/Jookia/gituuidnames
+cd gituuidnames
+git log
+./setup.sh
+git log
+```
+
+the first log will show ugly UUIDs, the second will show beautiful names
+all with the same commit hashes
+
+so try adding a file and committing it, then cloning again:
+
+```
+echo "TEST" > file
+git add file
+git commit -m "what"
+cd ..
+git clone gituuidnames gituuidnames2
+cd gituuidnames2
+./setup.sh
+git log
+```
+
+wow, it all works! you've committed as usual
+
+but you've decided your name or whatever needs changing, so now you do this:
+
+```
+cd ../gituuidnames
+./update-uuid.sh $(git config user.name) "My New Name" "my.long.email@gmail.com"
+git log
+```
+
+next time someone fetches from your repo and syncs it will update the names:
+
+```
+cd ../gituuidnames2
+git fetch
+./sync-uuid.sh
+git log
+```
+
+what's the point
+================
+
+the only point here is to show is that abstracting author info to use UUIDs in
+git is fairly easy with scripts. this example is the most limited thing in the world
+and i made it in a few hours but i'm sure if we took our best minds we could probably
+nail out a solution that would auto-detect and auto-sync uuids
