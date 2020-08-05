@@ -1,2 +1,4 @@
 test
 git config log.mailmap true
+git config mailmap.blob uuid-map
+git update-ref uuid-map "$(git hash-object -w NEWMAP)"
